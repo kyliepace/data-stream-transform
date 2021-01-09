@@ -3,12 +3,31 @@
   "version": "1.0.0",
   "description": "kafka data streaming and processing with node",
   "main": "lib/index.js",
+  "keywords": [
+    "kafka",
+    "node",
+    "kafkajs",
+    "data transformation",
+    "typescript"
+  ],
+  "engines": {
+    "node": "12",
+    "npm": ">= 6.0.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "rm -Rf ./lib && tsc",
+    "lint": "eslint --ext .js,.ts src/"
   },
   "author": "Kylie Pace",
   "license": "ISC",
   "dependencies": {
     "kafkajs": "^1.15.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.12.0",
+    "@typescript-eslint/parser": "^4.12.0",
+    "eslint": "^7.17.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.3"
   }
 }
