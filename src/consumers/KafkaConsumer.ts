@@ -22,13 +22,15 @@ export default class KafkaConsumerModel {
   }
 
   async onEvent(callback: EventHandler): Promise<void> {
-    await this.consumer.subscribe({
-      topic: this.topicName,
-      fromBeginning: true
-    });
-
     return await this.consumer.run({
       eachMessage: callback
+    });
+  }
+
+  async subscribe(){
+    return await this.consumer.subscribe({
+      topic: this.topicName,
+      fromBeginning: true
     });
   }
 }
