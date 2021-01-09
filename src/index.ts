@@ -1,13 +1,30 @@
-import producer from './producers/models/producer';
-import consumer from './consumers/consumer';
-
+import KafkaProducer from './producers/models/KafkaProducer';
+import KafkaConsumer from './consumers/KafkaConsumer';
 
 const run = async () => {
+
+  const producer = new KafkaProducer('test-topic');
+  await producer.connect();
+
   // Producing
-  await producer();
+  await producer.sendMessages([
+    {
+      value: 'Hello KafkaJS user!'
+    }
+  ]);
 
   // Consuming
-  await consumer()
+  const consumer = new KafkaConsumer('test-topic', 'test-group');
+
+  const callback = ( { topic, partition, message}: any) => {
+    return Promise.resolve(console.log({
+      partition,
+      offset: message.offset,
+      value: message.value.toString(),
+    }))
+  };
+
+  await consumer.onEvent(callback);
 
 }
 
