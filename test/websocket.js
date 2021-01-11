@@ -16,7 +16,11 @@ async function run() {
   await new Promise(resolve => clients[0].once('open', resolve));
 
   // Prints "Hello!" twice, once for each client.
-  clients[0].send('Hello!');
+  clients[0].send(
+    JSON.stringify({
+      value: 'Hello KafkaJS user!'
+    })
+  );
   console.log('client sent message')
   return;
 }

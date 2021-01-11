@@ -17,6 +17,6 @@
   ],
   "include": [
     "./src/**/*.json",
-    "./src/**/*.ts", "src/index.ts"
+    "./src/**/*.ts"
   ]
 }
