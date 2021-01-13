@@ -1,16 +1,16 @@
-import { safeParseJSON } from './helpers';
 import KafkaConsumer from './KafkaConsumer';
 import EventModel from './models/EventModel';
 import * as constants from '../constants.json';
+import TransformService from './services/TransformService';
 
 
 async function run() {
-  const event = new EventModel();
-  const consumer = new KafkaConsumer(constants.topics.EVENTS, 'test-group', event.processMessage);
-  // Consuming
+  const transformService = new TransformService(EventModel);
+  const consumer = new KafkaConsumer(constants.topics.EVENTS, 'test-group', transformService.processMessage);
+
+
+  // subscribe to topic and call event.processMessage on each received message
   await consumer.subscribe();
-
-
   await consumer.onEvent();
 
   // make sure connections close on program exit
@@ -23,4 +23,4 @@ async function run() {
 
 run().catch(err => {
   console.log(err)
-})
+});

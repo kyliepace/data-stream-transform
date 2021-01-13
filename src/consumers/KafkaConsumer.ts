@@ -22,7 +22,7 @@ export default class KafkaConsumer {
     await this.consumer.connect();
   }
 
-  close(){
+  close(): void {
     this.consumer.disconnect();
   }
 
@@ -32,7 +32,7 @@ export default class KafkaConsumer {
     });
   }
 
-  async subscribe(){
+  async subscribe(): Promise<void> {
     return await this.consumer.subscribe({
       topic: this.topicName,
       fromBeginning: true
