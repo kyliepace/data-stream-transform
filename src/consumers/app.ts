@@ -1,6 +1,8 @@
+import { safeParseJSON } from './helpers';
 import KafkaConsumer from './KafkaConsumer';
+import * as constants from '../constants.json';
 
-const consumer = new KafkaConsumer('test-topic', 'test-group');
+const consumer = new KafkaConsumer(constants.topics.EVENTS, 'test-group');
 
 
 async function run() {
@@ -8,10 +10,12 @@ async function run() {
     await consumer.subscribe();
 
     const callback = ( { topic, partition, message}: any) => {
+      const data = safeParseJSON(message.value);
+
       return Promise.resolve(console.log({
         partition,
         offset: message.offset,
-        value: message.value.toString(),
+        data
       }))
     };
 

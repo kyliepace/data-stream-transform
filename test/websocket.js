@@ -1,7 +1,6 @@
 const WebSocket = require('ws');
 
 let clients = [
-  new WebSocket('ws://localhost:8080'),
   new WebSocket('ws://localhost:8080')
 ];
 
@@ -15,10 +14,11 @@ async function run() {
   // Wait for the client to connect using async/await
   await new Promise(resolve => clients[0].once('open', resolve));
 
-  // Prints "Hello!" twice, once for each client.
   clients[0].send(
     JSON.stringify({
-      value: 'Hello KafkaJS user!'
+      timestamp: 1569972082,
+      type: "SESSION_START",
+      session_id: "e6fa79ca-d142-4046-a134-5134f16a0b5e"
     })
   );
   console.log('client sent message')

@@ -11,7 +11,7 @@ interface ITopicConfig {
   replicationFactor: number
 }
 
-export default class KafkaProducerModel {
+export default class KafkaProducer {
   topicName: string;
   numPartitions: number;
   numReplicas: number;
