@@ -26,12 +26,16 @@
   "author": "Kylie Pace",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
     "ioredis": "^4.19.4",
     "ip": "^1.1.5",
     "kafkajs": "^1.15.0",
     "ws": "^7.4.2"
   },
   "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/express-ws": "^3.0.0",
     "@types/ioredis": "^4.17.11",
     "@types/ip": "^1.1.0",
     "@types/node": "^14.14.20",

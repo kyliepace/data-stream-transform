@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 
 let clients = [
-  new WebSocket('ws://localhost:8080')
+  new WebSocket('ws://localhost:8080/websocket?sessionId=12')
 ];
 
 
