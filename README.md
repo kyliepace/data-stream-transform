@@ -1,22 +1,23 @@
 
 ### Requirements:
- 📇 docker
+ 📇 docker v20
  😸 node v12 or higher
 
 
 ### To run locally:
-export ip value for kafka to connect to
-`npm run setHost`
+make ip address available to kafka [(see why)](https://github.com/wurstmeister/kafka-docker/wiki/Connectivity)
+`export HOST_IP=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)`
 
-spin up kafka services through docker
+spin up kafka services through docker.
 `docker-compose up`
 
-install node packages
+in a new terminal window, install node packages
 `npm install`
 
 run typescript websocket
 `npm run server:dev`
 
+in another new terminal window,
 run consumer app to confirm messages being published
 `npm run consumer:dev`
 
@@ -39,8 +40,16 @@ Speaking of running locally, I didn't completely divorce the two services as I w
 
 Once the consuming service receives data through the kafka topic, that data gets saved to a redis instance. A more typical solution with kafka would probably be to use Faust or a stream processing framework, however I found the options for node to be less developed, didn't want to introduce a second language to my code sample, and think that Redis is doing essentially what I'd be doing if I were using a framework to transform data from streams into tables.
 
+Of course, this raises the question of if I'm using redis already, why not make use of Redis Pub/Sub as the messaging system? My only reason to use kafka is because I wanted to see if I could set up a kafka system in Node; I think the redis system looks good, too.
+
+
+ZADD [session_id] score[timestamp] member[name]
+ZADD 12 1569972083 cart_loaded
+orders from smallest to greatest timestamp
+ZRANGE [session_id] 0 -1 WITHSCORES // 0 and -1 are indices
+
 ### What I'd add
-- a proper logging client
+- a proper logging client so that logs are searchable by session_id and request_id header
 - security & rate limiting
 - CICD
 - architecture: no need for this to be a monolithic application

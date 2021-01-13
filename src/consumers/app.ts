@@ -1,12 +1,11 @@
 import KafkaConsumer from './KafkaConsumer';
-import EventModel from './models/EventModel';
 import * as constants from '../constants.json';
 import TransformService from './services/TransformService';
 
 
 async function run() {
-  const transformService = new TransformService(EventModel);
-  const consumer = new KafkaConsumer(constants.topics.EVENTS, 'test-group', transformService.processMessage);
+  const transformService = new TransformService();
+  const consumer = new KafkaConsumer(constants.topics.EVENTS, 'test-group', transformService.processMessage.bind(transformService));
 
 
   // subscribe to topic and call event.processMessage on each received message

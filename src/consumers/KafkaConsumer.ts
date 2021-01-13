@@ -1,8 +1,6 @@
 import { Consumer, EachMessagePayload } from 'kafkajs';
 import kafkaClient from '../KafkaClient';
 
-type EventHandler = (payload: EachMessagePayload) => Promise<void>
-
 export default class KafkaConsumer {
   topicName: string;
   groupId: string;

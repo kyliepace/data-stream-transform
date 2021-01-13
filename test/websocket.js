@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 
 let clients = [
-  new WebSocket('ws://localhost:8080/websocket?sessionId=12')
+  new WebSocket('ws://localhost:8080/websocket?session_id="e6fa79ca-d142-4046-a134-5134f16a0b5e"')
 ];
 
 
@@ -19,6 +19,14 @@ async function run() {
       session_id: "e6fa79ca-d142-4046-a134-5134f16a0b5e"
     }])
   );
+
+  setTimeout(() => (clients[0].send(
+    JSON.stringify([{
+      timestamp: 1569972083,
+      type: "EVENT",
+      name: "purchase_completed"
+    }]))
+  ), 1000);
 
   console.log('client sent message')
 

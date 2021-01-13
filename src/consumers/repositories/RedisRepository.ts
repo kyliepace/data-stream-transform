@@ -15,10 +15,17 @@ export default class RedisRepository implements IRepositoryLayer {
     return safeParseJSON(data);
   }
 
-  async save<T>(key: string, data: T): Promise<string | null> {
-    const value = jsonToString(data);
-    const id = await this.client.set(key, value);
-    console.log(`data saved in redis`);
-    return id;
+  async get<T>(key: string): Promise<Record<string, string>>{
+    return await this.client.hgetall(key);
   }
+
+  /**
+   * save hash
+   * https://redislabs.com/ebook/part-1-getting-started/chapter-1-getting-to-know-redis/1-2-what-redis-data-structures-look-like/1-2-4-hashes-in-redis/
+   */
+  async save<T>(key: string, field: string, value: string): Promise<void> {
+    await this.client.hset(key, field, value);
+    console.log(`data saved in redis`);
+  }
+
 }

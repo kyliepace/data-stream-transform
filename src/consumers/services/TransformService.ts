@@ -2,7 +2,6 @@ import { EachMessagePayload } from "kafkajs";
 import { safeParseJSON } from "../helpers";
 import IEvent from "../../interfaces/IEvent";
 import IRepositoryLayer from "../../interfaces/IRepositoryLayer";
-import EventModel from "../models/EventModel";
 import RedisRepository from "../repositories/RedisRepository";
 import TypeEnum from "../../types/TypeEnum";
 
@@ -15,17 +14,13 @@ export default class TransformService {
   }
 
   /**
-   * create initial entry with start timestamp
+   * generate the value for the field to be saved in redis hash
+   * append the timestamp to the name because cannot know that the name values will be unique
    */
-  async createRecord(sessionId: string, event: IEvent): Promise<string | null>{
-    const record = {
-      type: 'SESSION',
-      start: event.timestamp,
-      children: []
-    };
-
-    return await this.database.save(sessionId, record);
+  buildFieldString(event: IEvent): string {
+    return event.type === TypeEnum.EVENT ? `${event.name}:${event.timestamp}` : event.type;
   }
+
 
   /**
    * save data from an array of events
@@ -36,25 +31,22 @@ export default class TransformService {
     const sessionId = safeParseJSON<string>(message.key);
 
     if (!data || !sessionId){
+      console.error('no data in message')
       return;
     }
 
-    await this.saveIfStartSession(sessionId, data[0]);
-    await this.saveValidatedData(sessionId, data)
+    console.log('message received', sessionId)
+
+    await this.saveEvents(sessionId, data);
   }
 
   /**
-   * if event.type === SESSION_START,
-   * then create new record in redis
+   * save event data in sorted set
    */
-  async saveIfStartSession(sessionId: string, event: IEvent): Promise<void>{
-    if (event.type === TypeEnum.SESSION_START){
-      await this.createRecord(sessionId, event);
-    }
-  }
-
-  async saveValidatedData(sessionId: string, data: IEvent[]): Promise<> {
-    const modeledData = data.map(event => new EventModel(sessionId, event));
-    return await this.database.save(sessionId, modeledData)
+  async saveEvents(sessionId: string, data: IEvent[]): Promise<void> {
+    await Promise.all(data.map(event => {
+      const field = this.buildFieldString(event);
+      return this.database.save(sessionId, field, event.timestamp)
+    }));
   }
 }
