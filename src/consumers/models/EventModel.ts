@@ -1,16 +1,16 @@
-import TypeEnum from "../../server/types/TypeEnum";
-import IEvent from "../interfaces/IEvent";
+import TypeEnum from "../../types/TypeEnum";
+import IEvent from "../../interfaces/IEvent";
 
-export default class EventModel implements IEvent {
+export default class EventModel implements ISessionChildEvent {
   timestamp: number
   type: TypeEnum
   name?: string
   session_id: string
 
-  constructor(data: IEvent){
+  constructor(sessionId: string, data: IEvent){
+    this.session_id = sessionId;
     this.timestamp = data.timestamp;
     this.type = data.type as TypeEnum;
-    this.session_id = data.session_id;
     if (data.name){
       this.name = data.name;
     }

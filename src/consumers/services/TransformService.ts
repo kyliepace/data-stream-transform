@@ -1,28 +1,60 @@
 import { EachMessagePayload } from "kafkajs";
 import { safeParseJSON } from "../helpers";
-import IEvent from "../interfaces/IEvent";
-import IRepositoryLayer from "../interfaces/IRepositoryLayer";
+import IEvent from "../../interfaces/IEvent";
+import IRepositoryLayer from "../../interfaces/IRepositoryLayer";
 import EventModel from "../models/EventModel";
 import RedisRepository from "../repositories/RedisRepository";
+import TypeEnum from "../../types/TypeEnum";
 
 
 export default class TransformService {
-  Model;
   database: IRepositoryLayer;
 
-  constructor(Model = EventModel, DatabaseRepository = RedisRepository){
-    this.Model = Model;
+  constructor(DatabaseRepository = RedisRepository){
     this.database = new DatabaseRepository();
   }
 
+  /**
+   * create initial entry with start timestamp
+   */
+  async createRecord(sessionId: string, event: IEvent): Promise<string | null>{
+    const record = {
+      type: 'SESSION',
+      start: event.timestamp,
+      children: []
+    };
+
+    return await this.database.save(sessionId, record);
+  }
+
+  /**
+   * save data from an array of events
+   * passed through kafka topic
+   */
   async processMessage({ partition, message }: EachMessagePayload ): Promise<void> {
-    const data: IEvent[] | null = safeParseJSON<IEvent[]>(message?.value);
-    if (!data){
+    const data = safeParseJSON<IEvent[]>(message?.value);
+    const sessionId = safeParseJSON<string>(message.key);
+
+    if (!data || !sessionId){
       return;
     }
 
-    const dataModel = new this.Model(data);
+    await this.saveIfStartSession(sessionId, data[0]);
+    await this.saveValidatedData(sessionId, data)
+  }
 
-    await this.database.save(dataModel.session_id, dataModel);
+  /**
+   * if event.type === SESSION_START,
+   * then create new record in redis
+   */
+  async saveIfStartSession(sessionId: string, event: IEvent): Promise<void>{
+    if (event.type === TypeEnum.SESSION_START){
+      await this.createRecord(sessionId, event);
+    }
+  }
+
+  async saveValidatedData(sessionId: string, data: IEvent[]): Promise<> {
+    const modeledData = data.map(event => new EventModel(sessionId, event));
+    return await this.database.save(sessionId, modeledData)
   }
 }

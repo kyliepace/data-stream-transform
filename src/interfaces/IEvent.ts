@@ -1,4 +1,4 @@
-import TypeEnum from "../../server/types/TypeEnum";
+import TypeEnum from "../types/TypeEnum";
 
 export default interface IEvent {
   // epoch time

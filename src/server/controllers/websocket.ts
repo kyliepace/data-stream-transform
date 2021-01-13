@@ -1,9 +1,9 @@
 import WebSocket from 'ws';
 import { safeParseJSON } from '../../consumers/helpers';
-import IEvent from '../../consumers/interfaces/IEvent';
+import IEvent from '../../interfaces/IEvent';
 import KafkaProducer from '../services/KafkaProducer';
 import PublishDataService from '../services/PublishData';
-import TypeEnum from '../types/TypeEnum';
+import TypeEnum from '../../types/TypeEnum';
 
 /**
  * REST endpoint query params

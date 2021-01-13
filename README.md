@@ -45,6 +45,7 @@ Once the consuming service receives data through the kafka topic, that data gets
 - CICD
 - architecture: no need for this to be a monolithic application
 - redis instance not localhost
+- validate event model
 
 
 
