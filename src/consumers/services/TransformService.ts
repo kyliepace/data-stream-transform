@@ -16,7 +16,7 @@ export default class TransformService {
   }
 
   async processMessage({ partition, message }: EachMessagePayload ): Promise<void> {
-    const data: IEvent | null = safeParseJSON<IEvent>(message?.value);
+    const data: IEvent[] | null = safeParseJSON<IEvent[]>(message?.value);
     if (!data){
       return;
     }

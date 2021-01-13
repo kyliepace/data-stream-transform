@@ -13,22 +13,22 @@ async function run() {
   console.log('connected');
 
   clients[0].send(
-    JSON.stringify({
+    JSON.stringify([{
       timestamp: 1569972082,
       type: "SESSION_START",
       session_id: "e6fa79ca-d142-4046-a134-5134f16a0b5e"
-    })
+    }])
   );
 
   console.log('client sent message')
 
 
   setTimeout(() => (clients[0].send(
-    JSON.stringify({
+    JSON.stringify([{
       timestamp: 1569972085,
       type: "SESSION_END",
       session_id: "e6fa79ca-d142-4046-a134-5134f16a0b5e"
-    }))
+    }]))
   ), 2000);
   console.log('client sent final message')
 

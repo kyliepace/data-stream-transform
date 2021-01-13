@@ -7,7 +7,7 @@ export default class EventModel implements IEvent {
   name?: string
   session_id: string
 
-  constructor(data: any){
+  constructor(data: IEvent){
     this.timestamp = data.timestamp;
     this.type = data.type as TypeEnum;
     this.session_id = data.session_id;
