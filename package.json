@@ -16,20 +16,22 @@
   },
   "scripts": {
     "compile": "rm -Rf ./lib && tsc",
-    "server:dev": "ts-node-dev src/server/index.ts",
     "consumer:dev": "ts-node-dev src/consumers/app.ts",
     "lint": "eslint --ext .js,.ts src/",
     "mocha": "ts-mocha \"test/**/*.ts\" --recursive --exit",
+    "server:dev": "ts-node-dev src/server/index.ts",
     "start": "npm run lib/index.js",
     "test": "NODE_ENV=test npm run mocha"
   },
   "author": "Kylie Pace",
   "license": "ISC",
   "dependencies": {
+    "ip": "^1.1.5",
     "kafkajs": "^1.15.0",
     "ws": "^7.4.2"
   },
   "devDependencies": {
+    "@types/ip": "^1.1.0",
     "@types/node": "^14.14.20",
     "@types/websocket": "^1.0.1",
     "@types/ws": "^7.4.0",
