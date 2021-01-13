@@ -1,4 +1,5 @@
-import loaders from './loaders';
+import loadApp from './loaders';
 
 
-loaders();
+loadApp();
+

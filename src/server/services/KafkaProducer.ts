@@ -34,6 +34,10 @@ export default class KafkaProducer {
     await this.producer.connect();
   }
 
+  close(): void{
+    this.producer.disconnect();
+  }
+
   /**
    * If topic doesn't already exist, create it
    */

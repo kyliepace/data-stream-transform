@@ -3,7 +3,7 @@ import kafkaClient from '../KafkaClient';
 
 type EventHandler = (payload: EachMessagePayload) => Promise<void>
 
-export default class KafkaConsumerModel {
+export default class KafkaConsumer {
   topicName: string;
   groupId: string;
   private consumer: Consumer;
@@ -18,6 +18,10 @@ export default class KafkaConsumerModel {
 
   async connect(): Promise<void>{
     await this.consumer.connect();
+  }
+
+  close(){
+    this.consumer.disconnect();
   }
 
   async onEvent(callback: EventHandler): Promise<void> {

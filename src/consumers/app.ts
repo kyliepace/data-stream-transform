@@ -6,20 +6,26 @@ const consumer = new KafkaConsumer(constants.topics.EVENTS, 'test-group');
 
 
 async function run() {
-    // Consuming
-    await consumer.subscribe();
+  // Consuming
+  await consumer.subscribe();
 
-    const callback = ( { topic, partition, message}: any) => {
-      const data = safeParseJSON(message.value);
+  const callback = ( { topic, partition, message}: any) => {
+    const data = safeParseJSON(message.value);
 
-      return Promise.resolve(console.log({
-        partition,
-        offset: message.offset,
-        data
-      }))
-    };
+    return Promise.resolve(console.log({
+      partition,
+      offset: message.offset,
+      data
+    }))
+  };
 
-    await consumer.onEvent(callback);
+  await consumer.onEvent(callback);
+
+  process.on('SIGINT', function() {
+    console.log('\n gracefully exiting')
+    consumer.close();
+    process.exit();
+  });
 }
 
 run().catch(err => {
