@@ -10,6 +10,6 @@ export default interface IEvent {
   // description of event
   name?: string
 
-  // id of session passed with SESSION_START and SESSION_END types
-  session_id?: string
+  // id of session
+  session_id: string
 }
