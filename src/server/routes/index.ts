@@ -1,4 +1,5 @@
-import { Router } from 'express';
+import { Router, Request } from 'express';
+import WebSocket from 'ws';
 import { urlPaths } from '../../constants.json';
 import WebSocketController from '../controllers/websocket';
 
@@ -6,7 +7,12 @@ import WebSocketController from '../controllers/websocket';
 export default function routes(){
   const router = Router();
 
-  router.ws(`/${urlPaths.websocket}`, WebSocketController.onRoute.bind(WebSocketController));
+  router.ws(`/${urlPaths.websocket}`, (ws: WebSocket, req: Request) => {
+    console.log('websocket request established')
+    ws.on('message', (msg: string) => {
+      WebSocketController.onMessage(msg, req.query, ws);
+    });
+  });
   router.get('/data')
 	return router
 }

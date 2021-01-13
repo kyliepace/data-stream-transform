@@ -7,12 +7,10 @@ let clients = [
 
 
 async function run() {
-  clients.map(client => {
-    client.on('message', msg => console.log(msg));
-  });
 
   // Wait for the client to connect using async/await
   await new Promise(resolve => clients[0].once('open', resolve));
+  console.log('connected');
 
   clients[0].send(
     JSON.stringify({
@@ -21,7 +19,19 @@ async function run() {
       session_id: "e6fa79ca-d142-4046-a134-5134f16a0b5e"
     })
   );
+
   console.log('client sent message')
+
+
+  setTimeout(() => (clients[0].send(
+    JSON.stringify({
+      timestamp: 1569972085,
+      type: "SESSION_END",
+      session_id: "e6fa79ca-d142-4046-a134-5134f16a0b5e"
+    }))
+  ), 2000);
+  console.log('client sent final message')
+
   return;
 }
 
