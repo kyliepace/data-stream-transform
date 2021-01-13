@@ -15,14 +15,14 @@ export default class TransformService {
     this.database = new DatabaseRepository();
   }
 
-  async processMessage({ partition, message }: EachMessagePayload ): Promise<string | null> {
+  async processMessage({ partition, message }: EachMessagePayload ): Promise<void> {
     const data: IEvent | null = safeParseJSON<IEvent>(message?.value);
     if (!data){
-      return null;
+      return;
     }
 
     const dataModel = new this.Model(data);
 
-    return await this.database.save(dataModel.session_id, dataModel);
+    await this.database.save(dataModel.session_id, dataModel);
   }
 }

@@ -2,7 +2,6 @@ import loaders from './loaders';
 import * as constants from '../constants.json';
 
 async function startServer() {
-
   /**
    * load express application
    **/

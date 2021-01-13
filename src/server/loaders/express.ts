@@ -4,7 +4,7 @@ import { handleError } from '../routes/middleware';
 import routes from '../routes';
 import expressWs from 'express-ws';
 
-export default (app: express.Application ) => {
+export default (app: express.Application) => {
   expressWs(app);
 
   // Middleware that transforms the raw string of req.body into json

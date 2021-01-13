@@ -1,9 +1,5 @@
-import { Admin, CompressionTypes, Producer, RecordMetadata } from 'kafkajs';
+import { Admin, CompressionTypes, Producer, RecordMetadata, Message } from 'kafkajs';
 import kafkaClient from '../../KafkaClient';
-
-interface IMessage {
-  value: string
-}
 
 interface ITopicConfig {
   topic: string,
@@ -68,7 +64,7 @@ export default class KafkaProducer {
   /**
    * publish messages to topic
    */
-  async sendMessages(messages: IMessage[]): Promise<RecordMetadata[]> {
+  async sendMessages(messages: Message[]): Promise<RecordMetadata[]> {
     return await this.producer.send({
       topic: this.topicName,
       compression: CompressionTypes.GZIP,
