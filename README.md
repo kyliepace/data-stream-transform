@@ -38,25 +38,18 @@ There was some risk for me in choosing Kafka over the Google Cloud Platform Pub/
 
 Speaking of running locally, I didn't completely divorce the two services as I would if they were really being deployed separately, and I did that so that I could keep this as a single package with a single `package.json` file, for ease of use as an MVP.
 
-Once the consuming service receives data through the kafka topic, that data gets saved to a redis instance. A more typical solution with kafka would probably be to use Faust or a stream processing framework, however I found the options for node to be less developed, didn't want to introduce a second language to my code sample, and think that Redis is doing essentially what I'd be doing if I were using a framework to transform data from streams into tables.
+Once the consuming service receives data through the kafka topic, that data gets saved to a redis instance. A more typical solution with kafka would probably be to use Faust or a stream processing framework, however I found the options for node to be less developed. Initially I chose to use Redis because it's a fast and light in-memory database, but its limitations meant that the data could not be saved in the transformed schema as defined by the coding instructions.
 
-Of course, this raises the question of if I'm using redis already, why not make use of Redis Pub/Sub as the messaging system? My only reason to use kafka is because I wanted to see if I could set up a kafka system in Node; I think the redis system looks good, too.
+Therefore, in order to save the data in its transformed state, I replaced Redis with MongoDB for its more powerful features when working with JSON.
 
-
-ZADD [session_id] score[timestamp] member[name]
-ZADD 12 1569972083 cart_loaded
-orders from smallest to greatest timestamp
-ZRANGE [session_id] 0 -1 WITHSCORES // 0 and -1 are indices
 
 ### What I'd add
 - a proper logging client so that logs are searchable by session_id and request_id header
 - security & rate limiting
-- CICD
+- CI/CD
 - architecture: no need for this to be a monolithic application
-- redis instance not localhost
+- replace services from docker-compose with actual deployed instances
 - validate event model
-
-
 
 
 

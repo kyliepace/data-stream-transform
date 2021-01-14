@@ -10,7 +10,7 @@ class MongoConnector {
   cachedClient?: MongoClient;
   private client: MongoClient
 
-  constructor(uri: string = `${HOST_IP}:27017`) {
+  constructor(uri: string = `mongodb://localhost:27017`) {
     this.client = new MongoClient(uri, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
@@ -25,6 +25,10 @@ class MongoConnector {
       console.log('mongo successfully connected');
     }
     return this.cachedClient;
+  }
+
+  disconnect(){
+    this.client.close();
   }
 }
 

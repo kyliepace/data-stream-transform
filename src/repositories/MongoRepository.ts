@@ -1,6 +1,7 @@
 import {
   Db,
   Collection,
+  DeleteWriteOpResultObject,
   FindAndModifyWriteOpResultObject,
   ObjectID,
   FilterQuery,
@@ -38,6 +39,16 @@ export default class MongoRepository {
    */
   async collection(): Promise<Collection>{
     return this.cachedDb ? this.cachedDb.collection(this.collectionName) : await this.connect();
+  }
+
+  async delete<T>(query: FilterQuery<T>): Promise<void>{
+    const collection = await this.collection()
+    const result = await collection.deleteOne(query);
+    console.log(`${result.deletedCount} documents deleted`);
+  }
+
+  disconnect(){
+    MongoClient.disconnect();
   }
 
   async findOne<T>(query: FilterQuery<T>, options?: FindOneOptions<T extends any ? any : T>): Promise<T | null> {

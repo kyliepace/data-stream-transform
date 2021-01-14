@@ -11,7 +11,6 @@ export default class PublishDataService {
    * publish the data to the topic defined by the producer model
    */
   async publish(msg: string, sessionId: string): Promise<RecordMetadata[]>{
-    console.log(sessionId)
     const message = {
       value: msg,
       key: sessionId.toString()

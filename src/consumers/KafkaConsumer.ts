@@ -32,9 +32,10 @@ export default class KafkaConsumer {
   }
 
   async subscribe(): Promise<void> {
-    return await this.consumer.subscribe({
+    await this.consumer.subscribe({
       topic: this.topicName,
       fromBeginning: true
     });
+    console.log('consumer subscribed')
   }
 }
