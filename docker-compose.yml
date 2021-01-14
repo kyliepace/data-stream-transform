@@ -10,6 +10,12 @@
 version: '3.7'
 
 services:
+  redis:
+    image: redis:6.0.7
+    container_name: redis
+    ports:
+      - 6379:6379
+
   zookeeper:
     image: confluentinc/cp-zookeeper:5.2.2
     ports:

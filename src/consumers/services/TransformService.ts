@@ -1,8 +1,8 @@
 import { EachMessagePayload } from "kafkajs";
-import { safeParseJSON } from "../helpers";
+import { safeParseJSON } from "../../helpers";
 import IEvent from "../../interfaces/IEvent";
 import IRepositoryLayer from "../../interfaces/IRepositoryLayer";
-import RedisRepository from "../repositories/RedisRepository";
+import RedisRepository from "../../repositories/RedisRepository";
 import TypeEnum from "../../types/TypeEnum";
 
 

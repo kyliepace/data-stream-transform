@@ -7,6 +7,7 @@ async function run() {
   const transformService = new TransformService();
   const consumer = new KafkaConsumer(constants.topics.EVENTS, 'test-group', transformService.processMessage.bind(transformService));
 
+  await consumer.connect();
 
   // subscribe to topic and call event.processMessage on each received message
   await consumer.subscribe();

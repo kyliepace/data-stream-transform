@@ -1,5 +1,5 @@
 import { Consumer, EachMessagePayload } from 'kafkajs';
-import kafkaClient from '../KafkaClient';
+import kafkaClient from '../clients/KafkaClient';
 
 export default class KafkaConsumer {
   topicName: string;
@@ -18,6 +18,7 @@ export default class KafkaConsumer {
 
   async connect(): Promise<void>{
     await this.consumer.connect();
+    console.log('consumer connected')
   }
 
   close(): void {

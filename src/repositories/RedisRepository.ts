@@ -1,6 +1,6 @@
 import RedisClient from '../clients/RedisClient';
 import { jsonToString, safeParseJSON } from '../helpers';
-import IRepositoryLayer from '../../interfaces/IRepositoryLayer';
+import IRepositoryLayer from '../interfaces/IRepositoryLayer';
 
 export default class RedisRepository implements IRepositoryLayer {
   client;

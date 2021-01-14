@@ -1,5 +1,5 @@
 import { Admin, CompressionTypes, Producer, RecordMetadata, Message } from 'kafkajs';
-import kafkaClient from '../../KafkaClient';
+import kafkaClient from '../../clients/KafkaClient';
 
 interface ITopicConfig {
   topic: string,

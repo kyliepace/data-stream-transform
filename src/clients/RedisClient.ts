@@ -1,5 +1,7 @@
 import Redis from 'ioredis';
+import ip from 'ip';
 
+const HOST_IP = process.env.HOST_IP || ip.address();
 /**
  * singleton connection to redis database
  * not so important on an express app but
@@ -15,4 +17,4 @@ class RedisClient {
   }
 }
 
-export default new RedisClient(process.env.REDIS_URI);
+export default new RedisClient(`${HOST_IP}:6379`);
