@@ -1,24 +1,46 @@
 import { EachMessagePayload } from "kafkajs";
 import { safeParseJSON } from "../../helpers";
 import IEvent from "../../interfaces/IEvent";
-import IRepositoryLayer from "../../interfaces/IRepositoryLayer";
-import RedisRepository from "../../repositories/RedisRepository";
+import MongoRepository from "../../repositories/MongoRepository";
 import TypeEnum from "../../types/TypeEnum";
 
-
 export default class TransformService {
-  database: IRepositoryLayer;
+  database: MongoRepository;
 
-  constructor(DatabaseRepository = RedisRepository){
+  constructor(DatabaseRepository = MongoRepository){
     this.database = new DatabaseRepository();
   }
 
   /**
-   * generate the value for the field to be saved in redis hash
-   * append the timestamp to the name because cannot know that the name values will be unique
+   * return an array of events
+   * without any of the SESSION_START or SESSION_END events
+   * without mapping through entire array
    */
-  buildFieldString(event: IEvent): string {
-    return event.type === TypeEnum.EVENT ? `${event.name}:${event.timestamp}` : event.type;
+  buildChildData(firstTimestamp: number | null, lastTimestamp: number | null, data: IEvent[]): IEvent[] {
+    // if a value exists for first timestamp,
+    // remove that first event from the data array
+    if (!!firstTimestamp){
+      data.shift();
+    }
+
+    // if a value exists for the last timestamp,
+    // remove that last event from the data array
+    if (!!lastTimestamp){
+      data.pop();
+    }
+
+    return data;
+  }
+
+  /**
+   * only return the timestamp if it belongs to the first or last
+   * event in the stream
+   */
+  getSessionTimestamp(data: IEvent, type: string): number | null {
+    if (data.type === type){
+      return data.timestamp;
+    }
+    return null;
   }
 
 
@@ -41,12 +63,32 @@ export default class TransformService {
   }
 
   /**
-   * save event data in sorted set
+   * save event data
    */
   async saveEvents(sessionId: string, data: IEvent[]): Promise<void> {
-    await Promise.all(data.map(event => {
-      const field = this.buildFieldString(event);
-      return this.database.save(sessionId, field, event.timestamp)
-    }));
+    const firstTimestamp = this.getSessionTimestamp(data[0], TypeEnum.SESSION_START);
+    const lastTimestamp = this.getSessionTimestamp(data[data.length - 1], TypeEnum.SESSION_END);
+    const childData = this.buildChildData(firstTimestamp, lastTimestamp, data);
+
+    const query = {
+      session_id: sessionId
+    };
+    const update = {
+      $setOnInsert: {
+        type: 'SESSION',
+        start: firstTimestamp
+      },
+      $set: {
+        end: lastTimestamp
+      },
+      $push: {
+        children: {
+          $each: childData,
+          $sort: { 'data.timestamp': 1 }
+        }
+      }
+    };
+    const options = { upsert: true };
+    await this.database.updateOne(query, update, options);
   }
 }

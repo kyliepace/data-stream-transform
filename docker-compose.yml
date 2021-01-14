@@ -10,11 +10,14 @@
 version: '3.7'
 
 services:
-  redis:
-    image: redis:6.0.7
-    container_name: redis
+  mongodb:
+    image: mongo:latest
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+        MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
-      - 6379:6379
+        - "27017:27017"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:5.2.2

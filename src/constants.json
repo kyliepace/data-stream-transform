@@ -5,5 +5,9 @@
   },
   "urlPaths": {
     "websocket": "websocket"
+  },
+  "mongodb": {
+    "db": "events",
+    "collection": "transformed"
   }
 }
