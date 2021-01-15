@@ -13,7 +13,7 @@ export default class PublishDataService {
   async publish(msg: string, sessionId: string): Promise<RecordMetadata[]>{
     const message = {
       value: msg,
-      key: sessionId.toString()
+      key: JSON.stringify(sessionId)
     };
     return await this.pubsubService.sendMessages([message])
   }

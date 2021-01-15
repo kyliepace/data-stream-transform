@@ -23,7 +23,10 @@ run consumer app to confirm messages being published
 
 The server will now be available at `http://localhost:8080`
 
+### Testing
 
+To test end-to-end, run all the services as described by the steps above.
+Then, in a new terminal window, run `npm run test`
 ### Routes
 `/websocket?session_id={string}`
 create a websocket connection that takes the session_id value as a query parameter

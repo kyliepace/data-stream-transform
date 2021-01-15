@@ -75,6 +75,7 @@ export default class MongoRepository {
           ...options
         }
       );
+    console.log('data updated');
     return result.value;
   }
 }

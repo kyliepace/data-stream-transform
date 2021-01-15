@@ -53,7 +53,10 @@ export default class TransformService {
     const sessionId = safeParseJSON<string>(message.key);
 
     if (!data || !sessionId){
-      console.error('no data in message')
+      console.error('no data in message', {
+        value: data,
+        key: sessionId
+      });
       return;
     }
 
