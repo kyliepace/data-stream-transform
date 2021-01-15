@@ -1,14 +1,20 @@
 import { EachMessagePayload } from "kafkajs";
 import { safeParseJSON } from "../../helpers";
 import IEvent from "../../interfaces/IEvent";
-import MongoRepository from "../../repositories/MongoRepository";
+import ITransformedData from "../../interfaces/ITransformedData";
 import TypeEnum from "../../types/TypeEnum";
+import SaveDataService from "./SaveDataService";
 
+/**
+ *
+ * service to transform data from event format
+ * to desired end format
+ */
 export default class TransformService {
-  database: MongoRepository;
+  saveDataService: SaveDataService;
 
-  constructor(DatabaseRepository = MongoRepository){
-    this.database = new DatabaseRepository();
+  constructor(saveDataService = SaveDataService){
+    this.saveDataService = new saveDataService();
   }
 
   /**
@@ -16,7 +22,7 @@ export default class TransformService {
    * without any of the SESSION_START or SESSION_END events
    * without mapping through entire array
    */
-  buildChildData(firstTimestamp: number | null, lastTimestamp: number | null, data: IEvent[]): IEvent[] {
+  buildChildData(data: IEvent[], firstTimestamp?: number, lastTimestamp?: number): IEvent[] {
     // if a value exists for first timestamp,
     // remove that first event from the data array
     if (!!firstTimestamp){
@@ -36,11 +42,11 @@ export default class TransformService {
    * only return the timestamp if it belongs to the first or last
    * event in the stream
    */
-  getSessionTimestamp(data: IEvent, type: string): number | null {
+  getSessionTimestamp(data: IEvent, type: string): number | undefined {
     if (data.type === type){
       return data.timestamp;
     }
-    return null;
+    return;
   }
 
 
@@ -62,36 +68,26 @@ export default class TransformService {
 
     console.log('message received', sessionId)
 
-    await this.saveEvents(sessionId, data);
+    const transformedData = this.transformData(sessionId, data);
+    await this.saveDataService.saveEvents(transformedData);
   }
 
   /**
-   * save event data
+   * find any of the first or last events
+   * and group the rest as children
    */
-  async saveEvents(sessionId: string, data: IEvent[]): Promise<void> {
+  transformData(sessionId: string, data: IEvent[]): ITransformedData {
     const firstTimestamp = this.getSessionTimestamp(data[0], TypeEnum.SESSION_START);
     const lastTimestamp = this.getSessionTimestamp(data[data.length - 1], TypeEnum.SESSION_END);
-    const childData = this.buildChildData(firstTimestamp, lastTimestamp, data);
+    const childData = this.buildChildData(data, firstTimestamp, lastTimestamp);
 
-    const query = {
-      session_id: sessionId
-    };
-    const update = {
-      $setOnInsert: {
-        type: 'SESSION',
-        start: firstTimestamp
-      },
-      $set: {
-        end: lastTimestamp
-      },
-      $push: {
-        children: {
-          $each: childData,
-          $sort: { 'data.timestamp': 1 }
-        }
-      }
-    };
-    const options = { upsert: true };
-    await this.database.updateOne(query, update, options);
+    return {
+      session_id: sessionId,
+      type: 'SESSION',
+      start: firstTimestamp,
+      end: lastTimestamp,
+      children: childData
+    }
   }
+
 }

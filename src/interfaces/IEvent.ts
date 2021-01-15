@@ -1,5 +1,8 @@
 import TypeEnum from "../types/TypeEnum";
 
+/**
+ * event published to events kafka topic
+ */
 export default interface IEvent {
   // epoch time
   timestamp: number
@@ -10,6 +13,4 @@ export default interface IEvent {
   // description of event
   name?: string
 
-  // id of session
-  session_id: string
 }
