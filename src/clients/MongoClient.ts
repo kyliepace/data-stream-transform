@@ -1,6 +1,4 @@
 import { MongoClient } from 'mongodb';
-import ip from 'ip';
-const HOST_IP = process.env.HOST_IP || ip.address();
 
 /**
  * how to query the mongo dbs

@@ -1,7 +1,6 @@
 import {
   Db,
   Collection,
-  DeleteWriteOpResultObject,
   FindAndModifyWriteOpResultObject,
   ObjectID,
   FilterQuery,

@@ -48,7 +48,7 @@ export default class TransformService {
    * save data from an array of events
    * passed through kafka topic
    */
-  async processMessage({ partition, message }: EachMessagePayload ): Promise<void> {
+  async processMessage({ message }: EachMessagePayload ): Promise<void> {
     const data = safeParseJSON<IEvent[]>(message?.value);
     const sessionId = safeParseJSON<string>(message.key);
 

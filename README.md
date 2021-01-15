@@ -53,6 +53,7 @@ Therefore, in order to save the data in its transformed state, I replaced Redis 
 - architecture: no need for this to be a monolithic application
 - replace services from docker-compose with actual deployed instances
 - validate event model
+- create index on mongodb on session_id
 
 
 
