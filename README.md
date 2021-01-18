@@ -23,6 +23,11 @@ run consumer app to confirm messages being published
 
 The server will now be available at `http://localhost:8080`
 
+To send data via websocket, connect to
+`ws://localhost:8080/websocket?session_id=SESSION_ID` where `SESSION_ID` is the key that will be used to retrieve the transformed data.
+
+To retrieve the transformed data, make a `GET` request to `http://localhost:8080/data?session_id=SESSION_ID` where `SESSION_ID` is that session_id value used in the websocket url.
+
 ### Testing
 
 To test end-to-end, run all the services as described by the steps above.
@@ -31,6 +36,8 @@ Then, in a new terminal window, run `npm run test`
 `/websocket?session_id={string}`
 create a websocket connection that takes the session_id value as a query parameter
 
+`/data?session_id={string}`
+retrieve the transformed data
 
 ### Solution
 I've split the solution into two backend services. One is an express server and the other is consumes and transforms data. The two services communicate using Kafka. I used [kafkajs](https://kafka.js.org/) to write kafka services in node.js.
