@@ -50,7 +50,7 @@ export default class MongoRepository {
     MongoClient.disconnect();
   }
 
-  async findOne<T>(query: FilterQuery<T>, options?: FindOneOptions<T extends any ? any : T>): Promise<T | null> {
+  async findOne<T>(query: FilterQuery<T>, options?: FindOneOptions<T extends any ? any : T>): Promise<any | null> {
     const collection = await this.collection()
     return collection.findOne(
         query,

@@ -12,8 +12,10 @@ export default async function(req: Request, res: Response){
 
   try{
     const results = await databaseService.getData(session_id);
-    console.log(results)
-    return res.status(200).json(results);
+    console.log(`results found for ${session_id}: `, results)
+    return results ?
+      res.status(200).json(results) :
+      res.status(404).send(`no data found for session_id ${session_id}`)
   }
   catch(err){
     return res.status(500).send(err.message);
