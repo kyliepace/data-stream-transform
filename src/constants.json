@@ -1,7 +1,7 @@
 {
   "PORT": 8080,
   "topics": {
-    "EVENTS": "events"
+    "EVENTS": "websocket.events"
   },
   "urlPaths": {
     "websocket": "websocket"

@@ -24,9 +24,12 @@ describe('websocket http request', () => {
   });
 
 
-  describe('sending multiple messages', () => {
-    beforeEach(done => setTimeout(done, 500));
+  describe('sending multiple messages with child events not in order', () => {
+    // give consumer app some time to receive kafka message
+    beforeEach(done => setTimeout(done, 1800));
     before(() => {
+
+      // send session_start and the last event
       clients[0].send(
         JSON.stringify([
           {
@@ -37,17 +40,23 @@ describe('websocket http request', () => {
           {
             timestamp: 1569972085,
             type: "EVENT",
-            name: "basket_removed"
+            name: "last_event"
           }
         ])
       );
 
+      // send the middle events and then session_end
       clients[0].send(
         JSON.stringify([
           {
             timestamp: 1569972083,
             type: "EVENT",
-            name: "purchase_completed"
+            name: "middle_event"
+          },
+          {
+            timestamp: 1569972083,
+            type: "EVENT",
+            name: "first_event"
           },
           {
             timestamp: 1569972086,
@@ -58,14 +67,31 @@ describe('websocket http request', () => {
       );
     });
 
-    it('saves data', async () => {
+    it('saves data with child events in order by timestamp and with start and end timestamps', async () => {
       const data = await database.findOne({session_id});
       console.log(data)
       chai.expect(data).to.have.property('session_id').which.equals(session_id);
       chai.expect(data).to.have.property('end').which.equals(1569972086);
       chai.expect(data).to.have.property('start').which.equals(1569972082);
       chai.expect(data).to.have.property('children').which.is.an('array');
-      chai.expect(data.children.length).to.equal(2);
+      chai.expect(data.children.length).to.equal(3);
+      chai.expect(data.children).to.deep.equal([
+        {
+          type: 'EVENT',
+          timestamp: 1569972083,
+          name: 'middle_event'
+        },
+        {
+          type: 'EVENT',
+          timestamp: 1569972083,
+          name: 'first_event'
+        },
+        {
+          type: 'EVENT',
+          timestamp: 1569972085,
+          name: 'last_event'
+        }
+      ])
     });
   });
 

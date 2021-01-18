@@ -29,7 +29,8 @@ export default class SaveDataService {
       $push: {
         children: {
           $each: data.children,
-          $sort: { 'data.timestamp': 1 }
+          // sort asc on timestamp so oldest events will be at beginning of array
+          $sort: { 'timestamp': 1 }
         }
       }
     };

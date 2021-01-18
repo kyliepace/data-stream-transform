@@ -49,11 +49,13 @@ Therefore, in order to save the data in its transformed state, I replaced Redis 
 ### What I'd add
 - a proper logging client so that logs are searchable by session_id and request_id header
 - security & rate limiting
+- database access: the server application only needs read permission
 - CI/CD
-- architecture: no need for this to be a monolithic application
+- architecture: no need for this to be a monolithic application. deploying separate resources would improve resilience, scalability, and security.
 - replace services from docker-compose with actual deployed instances
 - validate event model
 - create index on mongodb on session_id
+- currently, there is a potential problem if the websocket client tries to send the same data again. There is no uniqueness constraint on each item in the `children` array so events would be duplicated. Maybe any existing database record should be deleted or archived when a SESSION_START event arrives, or the SaveDataService should use mongo's `$unset` operator to clear the `children` array.
 
 
 

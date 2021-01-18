@@ -16,7 +16,7 @@
   },
   "scripts": {
     "compile": "rm -Rf ./lib && tsc",
-    "consumer:dev": "ts-node-dev src/consumers/app.ts",
+    "consumer:dev": "ts-node-dev src/consumer/app.ts",
     "lint": "eslint --ext .js,.ts src/",
     "mocha": "ts-mocha \"test/**/*.ts\" --recursive --exit",
     "server:dev": "ts-node-dev src/server/index.ts",
