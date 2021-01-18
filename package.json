@@ -18,10 +18,11 @@
     "compile": "rm -Rf ./lib && tsc",
     "consumer:dev": "ts-node-dev src/consumer/app.ts",
     "lint": "eslint --ext .js,.ts src/",
-    "mocha": "ts-mocha \"test/**/*.ts\" --recursive --exit",
     "server:dev": "ts-node-dev src/server/index.ts",
     "start": "npm run lib/index.js",
-    "test": "NODE_ENV=test npm run mocha"
+    "test:consumer": "ts-mocha \"test/consumer/**/**.ts\" --recursive --exit",
+    "test:integration": "NODE_ENV=test ts-mocha \"test/websocket.test.ts\" --recursive --exit",
+    "test": "npm run test:consumer && npm run test:integration"
   },
   "author": "Kylie Pace",
   "license": "ISC",
